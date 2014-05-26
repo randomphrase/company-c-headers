@@ -1,0 +1,8 @@
+#+TITLE: Auto-completion for C/C++ headers using Company
+#+AUTHOR: Alastair Rankine
+#+EMAIL: alastair@girtby.net
+
+This library enables the completion of C/C++ header file names using [[http://company-mode.github.io][Company mode]] for Emacs.
+
+It is inspired by [[https://github.com/mooz/auto-complete-c-headers][auto-complete-c-headers]] which is based on the auto-complete library.
+
