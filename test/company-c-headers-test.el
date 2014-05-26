@@ -31,15 +31,15 @@
 (ert-deftest parse-include-directives ()
   "Tests correct parsing of include directives"
   
-  (should (string-match-p c-header-prefix "#include <"))
-  (should (string-match-p c-header-prefix "#include <sys/"))
-  (should (string-match-p c-header-prefix "#include <blah.h"))
-  (should (string-match-p c-header-prefix "#include <sys/blah.h"))
-  (should (string-match-p c-header-prefix "#include \""))
-  (should (string-match-p c-header-prefix "#include \"blah\""))
+  (should (string-match-p company-c-headers-include-declaration "#include <"))
+  (should (string-match-p company-c-headers-include-declaration "#include <sys/"))
+  (should (string-match-p company-c-headers-include-declaration "#include <blah.h"))
+  (should (string-match-p company-c-headers-include-declaration "#include <sys/blah.h"))
+  (should (string-match-p company-c-headers-include-declaration "#include \""))
+  (should (string-match-p company-c-headers-include-declaration "#include \"blah\""))
 
-  (should-not (string-match-p c-header-prefix "// #include <blah>"))
-  (should-not (string-match-p c-header-prefix "/* #include \"blah.h\" */"))
+  (should-not (string-match-p company-c-headers-include-declaration "// #include <blah>"))
+  (should-not (string-match-p company-c-headers-include-declaration "/* #include \"blah.h\" */"))
   )
 
 (ert-deftest match-header-files ()
