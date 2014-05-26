@@ -77,8 +77,7 @@
    (should (equal (company-c-headers-backend 'prefix) "\"foo"))
    (insert "/bar")
    (should (equal (company-c-headers-backend 'prefix) "\"foo/bar"))
-   )
-)
+   ))
 
 (ert-deftest user-include-candidates ()
   "Tests that we can build a list of candidates from user include directories."
@@ -87,8 +86,8 @@
    
    (with-test-c-buffer
     (setq company-c-include-path-system (list tmpdir))
-    (should (equal (company-c-headers-backend 'candidates "<") '("a.h" "b.h")))
-    (should (equal (company-c-headers-backend 'candidates "<a") '("a.h")))
+    (should (equal (company-c-headers-backend 'candidates "<") '("<a.h" "<b.h")))
+    (should (equal (company-c-headers-backend 'candidates "<a") '("<a.h")))
     )))
 
 (ert-deftest system-include-candidates ()
@@ -100,7 +99,7 @@
    (with-test-c-buffer
     (setq company-c-include-path-system (list (f-join tmpdir "sys")))
     (setq company-c-include-path-user (list (f-join tmpdir "user")))
-    (should (equal (company-c-headers-backend 'candidates "\"") '("user.h" "sys.h")))
+    (should (equal (company-c-headers-backend 'candidates "\"") '("\"user.h" "\"sys.h")))
     )))
 
 (ert-deftest subdir-candidates ()
@@ -112,9 +111,9 @@
    (with-test-c-buffer
     (setq company-c-include-path-system (list tmpdir))
     
-    (should (equal (company-c-headers-backend 'candidates "<") '("a.h" "sub/")))
-    (should (equal (company-c-headers-backend 'candidates "<sub") '("sub/")))
-    (should (equal (company-c-headers-backend 'candidates "<sub/") '("sub.h")))
+    (should (equal (company-c-headers-backend 'candidates "<") '("<a.h" "<sub/")))
+    (should (equal (company-c-headers-backend 'candidates "<sub") '("<sub/")))
+    (should (equal (company-c-headers-backend 'candidates "<sub/") '("<sub/sub.h")))
     )))
 
 (ert-deftest path-bound-to-function ()
@@ -126,7 +125,21 @@
    (with-test-c-buffer
     (setq company-c-include-path-system (lambda () (list tmpdir)))
      
-    (should (equal (company-c-headers-backend 'candidates "<") '("foo.h")))
+    (should (equal (company-c-headers-backend 'candidates "<") '("<foo.h")))
     )))
+
+(ert-deftest metadata-returns-directory ()
+  "Metadata for each candidate should be the directory for the corresponding header."
+  (with-test-headers
+   tmpdir '("foo.h")
+  
+   (with-test-c-buffer
+    (setq company-c-include-path-system (list tmpdir))
+
+    (should (equal
+             (company-c-headers-backend 'meta (car (company-c-headers-backend 'candidates "<")))
+             tmpdir))
+    )))
+
 
 ;;; company-c-headers-test.el ends here

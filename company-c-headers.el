@@ -29,7 +29,7 @@
 (require 'rx)
 (require 'cl-lib)
 
-(defvar c-header-prefix
+(defvar company-c-headers-include-declaration
   (rx
    line-start
    "#" (zero-or-more blank) (or "include" "import")
@@ -71,48 +71,66 @@ Otherwise just return the value."
 (defun company-c-headers--candidates-for (prefix dir)
   "Return a list of candidates for PREFIX in directory DIR.
 Filters on the appropriate regex for the current major mode."
-  (let* ((prefixdir (file-name-directory prefix))
+  (let* ((delim (substring prefix 0 1))
+         (fileprefix (substring prefix 1))
+         (prefixdir (file-name-directory fileprefix))
          (subdir (and prefixdir (concat (file-name-as-directory dir) prefixdir)))
-         (hdrs (cdr (assoc major-mode company-c-headers-modes))))
-    (if subdir
+         (hdrs (cdr (assoc major-mode company-c-headers-modes)))
+         candidates)
 
-        ;; If a subdirectory exists, just recurse into it
-        (when (file-directory-p subdir)
-          ;; TODO mapconcat to prepend prefixdir
-          (company-c-headers--candidates-for (file-name-nondirectory prefix) subdir))
+    ;; If we need to complete inside a subdirectory, use that
+    (when (and subdir (file-directory-p subdir))
+      (setq dir subdir)
+      (setq fileprefix (file-name-nondirectory fileprefix))
+      (setq delim (concat delim prefixdir))
+      )
       
-      ;; Using a list of completions for this directory, remove those that a) don't match the
-      ;; headers regexp, and b) are not directories (except for "." and ".." which ARE removed)
-      (sort (cl-remove-if (lambda (F) (and (not (string-match-p hdrs F))
-                                           (or (cl-member (directory-file-name F) '("." "..") :test 'equal)
-                                               (not (file-directory-p (concat (file-name-as-directory dir) F))))))
-                          (file-name-all-completions prefix dir))
-            #'string<)
-      )))
+    ;; Using a list of completions for this directory, remove those that a) don't match the
+    ;; headers regexp, and b) are not directories (except for "." and ".." which ARE removed)
+    (setq candidates (cl-remove-if
+                      (lambda (F) (and (not (string-match-p hdrs F))
+                                       (or (cl-member (directory-file-name F) '("." "..") :test 'equal)
+                                           (not (file-directory-p (concat (file-name-as-directory dir) F))))))
+                      (file-name-all-completions fileprefix dir)))
+
+    ;; We want to see candidates in alphabetical order per directory
+    (setq candidates (sort candidates #'string<))
+
+    ;; Add the delimiter and metadata
+    (mapcar (lambda (C) (propertize (concat delim C) 'directory dir)) candidates)
+    ))
 
 (defun company-c-headers--candidates (prefix)
-  (let ((pfx (substring prefix 1))
-        (userpaths (when (equal (aref prefix 0) ?\")
+  "Return candidates for PREFIX."
+  (let ((userpaths (when (equal (aref prefix 0) ?\")
                      (call-if-function company-c-include-path-user)))
         (syspaths (call-if-function company-c-include-path-system))
         candidates)
      
     (dolist (P userpaths)
-      (setq candidates (append candidates (company-c-headers--candidates-for pfx P))))
+      (setq candidates (append candidates (company-c-headers--candidates-for prefix P))))
     (dolist (P syspaths)
-      (setq candidates (append candidates (company-c-headers--candidates-for pfx P))))
+      (setq candidates (append candidates (company-c-headers--candidates-for prefix P))))
     candidates
     ))
 
+(defun company-c-headers--meta (prefix)
+  "Return metadata for PREFIX."
+  (get-text-property 0 'directory prefix))
+
 (defun company-c-headers-backend (command &optional arg &rest ignored)
-  "Backend for C/C++ header files."
+  "Company backend for C/C++ header files."
+  (interactive (list 'interactive))
   (pcase command
     (`interactive (company-begin-backend 'company-c-headers-backend))
     (`prefix (when (and (assoc major-mode company-c-headers-modes)
-                        (looking-back c-header-prefix (line-beginning-position)))
-               (match-string 1)))
+                        (looking-back company-c-headers-include-declaration (line-beginning-position)))
+               (match-string-no-properties 1)))
+    (`match (length arg))
+    (`no-cache t)
+    (`sorted t)
     (`candidates (company-c-headers--candidates arg))
-    (`meta (format "This value is named %s" arg))))
+    (`meta (company-c-headers--meta arg))))
 
 (provide 'company-c-headers)
 
