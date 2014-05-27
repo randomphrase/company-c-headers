@@ -114,24 +114,30 @@ Filters on the appropriate regex for the current major mode."
     candidates
     ))
 
-(defun company-c-headers--meta (prefix)
-  "Return metadata for PREFIX."
-  (get-text-property 0 'directory prefix))
+(defun company-c-headers--meta (candidate)
+  "Return the metadata associated with CANDIDATE.  Currently just the directory."
+  (get-text-property 0 'directory candidate))
 
-(defun company-c-headers-backend (command &optional arg &rest ignored)
+(defun company-c-headers--location (candidate)
+  "Return the location associated with CANDIDATE."
+  (cons (concat (file-name-as-directory (get-text-property 0 'directory candidate))
+                (file-name-nondirectory (substring candidate 1)))
+        1))
+
+(defun company-c-headers (command &optional arg &rest ignored)
   "Company backend for C/C++ header files."
   (interactive (list 'interactive))
   (pcase command
-    (`interactive (company-begin-backend 'company-c-headers-backend))
+    (`interactive (company-begin-backend 'company-c-headers))
     (`prefix
      (when (and (assoc major-mode company-c-headers-modes)
                 (looking-back company-c-headers-include-declaration (line-beginning-position)))
        (match-string-no-properties 1)))
-    (`match (length arg))
     (`no-cache t)
     (`sorted t)
     (`candidates (company-c-headers--candidates arg))
     (`meta (company-c-headers--meta arg))
+    (`location (company-c-headers--location arg))
     (`post-completion
      (when (looking-back company-c-headers-include-declaration (line-beginning-position))
        (let ((matched (match-string-no-properties 1)))

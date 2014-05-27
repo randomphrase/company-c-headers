@@ -58,25 +58,30 @@
     (should (string-match-p c++-headers "unordered_map"))
     ))
 
+(ert-deftest init-test ()
+  "Should be able to call 'init method without error"
+  (company-c-headers 'init)
+  )
+
 (ert-deftest check-major-mode-test ()
   "Checks the major mode before returning prefix"
   (with-temp-buffer
     (insert "#include \"")
-    (should-not (company-c-headers-backend 'prefix))
+    (should-not (company-c-headers 'prefix))
     (setq major-mode 'c-mode)
-    (should (company-c-headers-backend 'prefix))
+    (should (company-c-headers 'prefix))
    ))
    
 (ert-deftest parse-prefix ()
   "Tests that we can parse the prefix for completion"
   (with-test-c-buffer
-   (should (equal (company-c-headers-backend 'prefix) nil))
+   (should (equal (company-c-headers 'prefix) nil))
    (insert "#include \"")
-   (should (equal (company-c-headers-backend 'prefix) "\""))
+   (should (equal (company-c-headers 'prefix) "\""))
    (insert "foo")
-   (should (equal (company-c-headers-backend 'prefix) "\"foo"))
+   (should (equal (company-c-headers 'prefix) "\"foo"))
    (insert "/bar")
-   (should (equal (company-c-headers-backend 'prefix) "\"foo/bar"))
+   (should (equal (company-c-headers 'prefix) "\"foo/bar"))
    ))
 
 (ert-deftest user-include-candidates ()
@@ -86,8 +91,8 @@
    
    (with-test-c-buffer
     (setq company-c-include-path-system (list tmpdir))
-    (should (equal (company-c-headers-backend 'candidates "<") '("<a.h" "<b.h")))
-    (should (equal (company-c-headers-backend 'candidates "<a") '("<a.h")))
+    (should (equal (company-c-headers 'candidates "<") '("<a.h" "<b.h")))
+    (should (equal (company-c-headers 'candidates "<a") '("<a.h")))
     )))
 
 (ert-deftest system-include-candidates ()
@@ -99,7 +104,7 @@
    (with-test-c-buffer
     (setq company-c-include-path-system (list (f-join tmpdir "sys")))
     (setq company-c-include-path-user (list (f-join tmpdir "user")))
-    (should (equal (company-c-headers-backend 'candidates "\"") '("\"user.h" "\"sys.h")))
+    (should (equal (company-c-headers 'candidates "\"") '("\"user.h" "\"sys.h")))
     )))
 
 (ert-deftest subdir-candidates ()
@@ -111,9 +116,9 @@
    (with-test-c-buffer
     (setq company-c-include-path-system (list tmpdir))
     
-    (should (equal (company-c-headers-backend 'candidates "<") '("<a.h" "<sub/")))
-    (should (equal (company-c-headers-backend 'candidates "<sub") '("<sub/")))
-    (should (equal (company-c-headers-backend 'candidates "<sub/") '("<sub/sub.h")))
+    (should (equal (company-c-headers 'candidates "<") '("<a.h" "<sub/")))
+    (should (equal (company-c-headers 'candidates "<sub") '("<sub/")))
+    (should (equal (company-c-headers 'candidates "<sub/") '("<sub/sub.h")))
     )))
 
 (ert-deftest path-bound-to-function ()
@@ -125,7 +130,7 @@
    (with-test-c-buffer
     (setq company-c-include-path-system (lambda () (list tmpdir)))
      
-    (should (equal (company-c-headers-backend 'candidates "<") '("<foo.h")))
+    (should (equal (company-c-headers 'candidates "<") '("<foo.h")))
     )))
 
 (ert-deftest metadata-returns-directory ()
@@ -137,15 +142,29 @@
     (setq company-c-include-path-system (list tmpdir))
 
     (should (equal
-             (company-c-headers-backend 'meta (car (company-c-headers-backend 'candidates "<")))
+             (company-c-headers 'meta (car (company-c-headers 'candidates "<")))
              tmpdir))
     )))
+
+(ert-deftest candidate-location ()
+  "Location data for each candidate should be supported."
+  (with-test-headers
+   tmpdir '("foo.h")
+
+   (with-test-c-buffer
+    (setq company-c-include-path-system (list tmpdir))
+
+    (should (equal
+             (company-c-headers 'location (car (company-c-headers 'candidates "<")))
+             (cons (concat tmpdir "foo.h") 1)))
+    )))
+    
 
 (ert-deftest post-completion-user-include ()
   "After completion, add a terminating \" for user includes"
   (with-test-c-buffer
    (insert "#include \"foo.h")
-   (company-c-headers-backend 'post-completion)
+   (company-c-headers 'post-completion)
    (should (looking-back "#include \"foo.h\""))
    ))
 
@@ -153,7 +172,7 @@
   "After completion, add a terminating > for system includes"
   (with-test-c-buffer
    (insert "#include <foo.h")
-   (company-c-headers-backend 'post-completion)
+   (company-c-headers 'post-completion)
    (should (looking-back "#include <foo.h>"))
    ))
 
@@ -162,7 +181,7 @@
   (with-test-c-buffer
    (let ((expected (format "#include <%s" (file-name-as-directory "foo"))))
      (insert expected)
-     (company-c-headers-backend 'post-completion)
+     (company-c-headers 'post-completion)
      (should (looking-back expected))
      )))
 
