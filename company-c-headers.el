@@ -123,14 +123,25 @@ Filters on the appropriate regex for the current major mode."
   (interactive (list 'interactive))
   (pcase command
     (`interactive (company-begin-backend 'company-c-headers-backend))
-    (`prefix (when (and (assoc major-mode company-c-headers-modes)
-                        (looking-back company-c-headers-include-declaration (line-beginning-position)))
-               (match-string-no-properties 1)))
+    (`prefix
+     (when (and (assoc major-mode company-c-headers-modes)
+                (looking-back company-c-headers-include-declaration (line-beginning-position)))
+       (match-string-no-properties 1)))
     (`match (length arg))
     (`no-cache t)
     (`sorted t)
     (`candidates (company-c-headers--candidates arg))
-    (`meta (company-c-headers--meta arg))))
+    (`meta (company-c-headers--meta arg))
+    (`post-completion
+     (when (looking-back company-c-headers-include-declaration (line-beginning-position))
+       (let ((matched (match-string-no-properties 1)))
+         ;; Add a terminating delimiter unless we've completed a directory name
+         ;; TODO: handle pre-existing terminating delimiter?
+         (unless (equal matched (file-name-as-directory matched))
+           (pcase (aref matched 0)
+             (?\" (insert "\""))
+             (?< (insert ">")))))))
+    ))
 
 (provide 'company-c-headers)
 

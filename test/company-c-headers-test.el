@@ -141,5 +141,29 @@
              tmpdir))
     )))
 
+(ert-deftest post-completion-user-include ()
+  "After completion, add a terminating \" for user includes"
+  (with-test-c-buffer
+   (insert "#include \"foo.h")
+   (company-c-headers-backend 'post-completion)
+   (should (looking-back "#include \"foo.h\""))
+   ))
+
+(ert-deftest post-completion-system-include ()
+  "After completion, add a terminating > for system includes"
+  (with-test-c-buffer
+   (insert "#include <foo.h")
+   (company-c-headers-backend 'post-completion)
+   (should (looking-back "#include <foo.h>"))
+   ))
+
+(ert-deftest post-completion-directory-name ()
+  "Don't add a terminating delimiter if we've completed a directory name"
+  (with-test-c-buffer
+   (let ((expected (format "#include <%s" (file-name-as-directory "foo"))))
+     (insert expected)
+     (company-c-headers-backend 'post-completion)
+     (should (looking-back expected))
+     )))
 
 ;;; company-c-headers-test.el ends here
