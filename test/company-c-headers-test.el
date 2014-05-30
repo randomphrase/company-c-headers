@@ -107,6 +107,13 @@
     (should (equal (company-c-headers 'candidates "\"") '("\"user.h" "\"sys.h")))
     )))
 
+(ert-deftest ignore-nonexistent-paths ()
+  "Silently ignore nonexistent include paths."
+  (with-test-c-buffer
+   (setq company-c-include-path-system (list "/nonexistent"))
+   (should (equal (company-c-headers 'candidates "<") nil))
+   ))
+
 (ert-deftest subdir-candidates ()
   "Test that subdirectories are included in the list of candidates"
 

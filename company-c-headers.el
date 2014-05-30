@@ -114,15 +114,21 @@ Filters on the appropriate regex for the current major mode."
 
 (defun company-c-headers--candidates (prefix)
   "Return candidates for PREFIX."
-  (let ((userpaths (when (equal (aref prefix 0) ?\")
-                     (call-if-function company-c-include-path-user)))
-        (syspaths (call-if-function company-c-include-path-system))
+  (let ((p (if (equal (aref prefix 0) ?\")
+               (call-if-function company-c-include-path-user)
+             (call-if-function company-c-include-path-system)))
+        (next (when (equal (aref prefix 0) ?\")
+                (call-if-function company-c-include-path-system)))
         candidates)
-     
-    (dolist (P userpaths)
-      (setq candidates (append candidates (company-c-headers--candidates-for prefix P))))
-    (dolist (P syspaths)
-      (setq candidates (append candidates (company-c-headers--candidates-for prefix P))))
+    (while p
+      (when (file-directory-p (car p))
+        (setq candidates (append candidates (company-c-headers--candidates-for prefix (car p)))))
+
+      (setq p (or (cdr p)
+                  (let ((tmp next))
+                    (setq next nil)
+                    tmp)))
+      )
     candidates
     ))
 
