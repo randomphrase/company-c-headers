@@ -151,7 +151,6 @@ Filters on the appropriate regex for the current major mode."
      (when (and (assoc major-mode company-c-headers-modes)
                 (looking-back company-c-headers-include-declaration (line-beginning-position)))
        (match-string-no-properties 1)))
-    (`no-cache t)
     (`sorted t)
     (`candidates (company-c-headers--candidates arg))
     (`meta (company-c-headers--meta arg))
