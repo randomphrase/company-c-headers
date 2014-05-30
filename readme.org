@@ -4,5 +4,21 @@
 
 This library enables the completion of C/C++ header file names using [[http://company-mode.github.io][Company mode]] for Emacs.
 
+[[screenshot.png][Screenshot]]
+
 It is inspired by [[https://github.com/mooz/auto-complete-c-headers][auto-complete-c-headers]] which is based on the auto-complete library.
 
+** Usage
+
+With the company-c-headers library added to the ~load-path~, all you need to do to initialize it is:
+
+#+BEGIN_SRC emacs-lisp
+(require 'company-c-headers)
+(add-to-list 'company-backends 'company-c-headers)
+#+END_SRC
+
+When you type an ~#include~ declaration within a supported major mode (currently ~c-mode~, ~c++-mode~ and ~objc-mode~), company-c-headers will search for header files within predefined search paths. company-c-headers can search "system" and "user" paths, depending on the type of ~#include~ declaration you type.
+
+Typically you would want to customize the search paths, which you can do using @<kbd>M-x customize-group@</kbd>, @<kbd>company-c-headers@</kbd>.
+
+Alternatively, you can bind the =company-c-headers-path-system= and =company-c-headers-path-user= variables to functions which return the corresponding paths. This allows integration with project-based libraries such as [[https://github.com/randomphrase/ede-compdb][EDE-compdb]].
