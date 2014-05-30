@@ -90,7 +90,7 @@
    tmpdir '("a.h" "b.h")
    
    (with-test-c-buffer
-    (setq company-c-include-path-system (list tmpdir))
+    (setq company-c-headers-path-system (list tmpdir))
     (should (equal (company-c-headers 'candidates "<") '("<a.h" "<b.h")))
     (should (equal (company-c-headers 'candidates "<a") '("<a.h")))
     )))
@@ -102,15 +102,15 @@
    tmpdir '("sys/sys.h" "user/user.h")
 
    (with-test-c-buffer
-    (setq company-c-include-path-system (list (f-join tmpdir "sys")))
-    (setq company-c-include-path-user (list (f-join tmpdir "user")))
+    (setq company-c-headers-path-system (list (f-join tmpdir "sys")))
+    (setq company-c-headers-path-user (list (f-join tmpdir "user")))
     (should (equal (company-c-headers 'candidates "\"") '("\"user.h" "\"sys.h")))
     )))
 
 (ert-deftest ignore-nonexistent-paths ()
   "Silently ignore nonexistent include paths."
   (with-test-c-buffer
-   (setq company-c-include-path-system (list "/nonexistent"))
+   (setq company-c-headers-path-system (list "/nonexistent"))
    (should (equal (company-c-headers 'candidates "<") nil))
    ))
 
@@ -121,7 +121,7 @@
    tmpdir '("a.h" "sub/sub.h")
 
    (with-test-c-buffer
-    (setq company-c-include-path-system (list tmpdir))
+    (setq company-c-headers-path-system (list tmpdir))
     
     (should (equal (company-c-headers 'candidates "<") '("<a.h" "<sub/")))
     (should (equal (company-c-headers 'candidates "<sub") '("<sub/")))
@@ -135,7 +135,7 @@
    tmpdir '("foo.h")
 
    (with-test-c-buffer
-    (setq company-c-include-path-system (lambda () (list tmpdir)))
+    (setq company-c-headers-path-system (lambda () (list tmpdir)))
      
     (should (equal (company-c-headers 'candidates "<") '("<foo.h")))
     )))
@@ -146,7 +146,7 @@
    tmpdir '("foo.h")
   
    (with-test-c-buffer
-    (setq company-c-include-path-system (list tmpdir))
+    (setq company-c-headers-path-system (list tmpdir))
 
     (should (equal
              (company-c-headers 'meta (car (company-c-headers 'candidates "<")))
@@ -159,7 +159,7 @@
    tmpdir '("foo.h")
 
    (with-test-c-buffer
-    (setq company-c-include-path-system (list tmpdir))
+    (setq company-c-headers-path-system (list tmpdir))
 
     (should (equal
              (company-c-headers 'location (car (company-c-headers 'candidates "<")))

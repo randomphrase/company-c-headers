@@ -33,7 +33,7 @@
   "Completion back-end for C/C++ header files."
   :group 'company)
 
-(defcustom company-c-include-path-system
+(defcustom company-c-headers-path-system
   '("/usr/include/" "/usr/local/include/")
   "List of paths to search for system (i.e. angle-bracket
 delimited) header files.  Alternatively, a function can be
@@ -42,12 +42,12 @@ supplied which returns the path list."
                  function)
   )
 
-(defcustom company-c-include-path-user
+(defcustom company-c-headers-path-user
   '(".")
   "List of paths to search for user (i.e. double-quote delimited)
 header files.  Alternatively, a function can be supplied which
 returns the path list.  Note that paths in
-`company-c-include-path-system' are implicitly appended."
+`company-c-headers-path-system' are implicitly appended."
   :type '(choice (repeat directory)
                  function)
   )
@@ -115,10 +115,10 @@ Filters on the appropriate regex for the current major mode."
 (defun company-c-headers--candidates (prefix)
   "Return candidates for PREFIX."
   (let ((p (if (equal (aref prefix 0) ?\")
-               (call-if-function company-c-include-path-user)
-             (call-if-function company-c-include-path-system)))
+               (call-if-function company-c-headers-path-user)
+             (call-if-function company-c-headers-path-system)))
         (next (when (equal (aref prefix 0) ?\")
-                (call-if-function company-c-include-path-system)))
+                (call-if-function company-c-headers-path-system)))
         candidates)
     (while p
       (when (file-directory-p (car p))
