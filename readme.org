@@ -4,7 +4,8 @@
 
 This library enables the completion of C/C++ header file names using [[http://company-mode.github.io][Company mode]] for Emacs.
 
-[[screenshot.png][Screenshot]]
+#+CAPTION: Screenshot of company-c-headers in action
+[[screenshot.png]]
 
 It is inspired by [[https://github.com/mooz/auto-complete-c-headers][auto-complete-c-headers]] which is based on the auto-complete library.
 
