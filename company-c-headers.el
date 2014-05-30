@@ -29,6 +29,29 @@
 (require 'rx)
 (require 'cl-lib)
 
+(defgroup company-c-headers nil
+  "Completion back-end for C/C++ header files."
+  :group 'company)
+
+(defcustom company-c-include-path-system
+  '("/usr/include/" "/usr/local/include/")
+  "List of paths to search for system (i.e. angle-bracket
+delimited) header files.  Alternatively, a function can be
+supplied which returns the path list."
+  :type '(choice (repeat directory)
+                 function)
+  )
+
+(defcustom company-c-include-path-user
+  '(".")
+  "List of paths to search for user (i.e. double-quote delimited)
+header files.  Alternatively, a function can be supplied which
+returns the path list.  Note that paths in
+`company-c-include-path-system' are implicitly appended."
+  :type '(choice (repeat directory)
+                 function)
+  )
+
 (defvar company-c-headers-include-declaration
   (rx
    line-start
@@ -49,17 +72,6 @@
     (objc-mode  . ,(rx ".h" line-end))
     )
   "Assoc list of supported major modes and associated header file names.")
-
-(defvar-local company-c-include-path-system '("/usr/include")
-  "List of paths to search for system (i.e. angle-bracket
-delimited) header files.  Alternatively this symbol can be
-bound to a function which returns the path list.")
-
-(defvar-local company-c-include-path-user '(".")
-  "List of paths to search for user (i.e. double-quote delimited)
-header files.  Alternatively this symbol can be bound to a
-function which returns the path list.  Note that paths in
-`company-c-include-path-system' are implicitly appended.")
 
 (defun call-if-function (path)
   "If PATH is bound to a function, return the result of calling it.
