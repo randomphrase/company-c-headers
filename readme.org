@@ -2,6 +2,9 @@
 #+AUTHOR: Alastair Rankine
 #+EMAIL: alastair@girtby.net
 
+#+ATTR_HTML: :style float: right
+https://travis-ci.org/randomphrase/company-c-headers.svg?branch=master
+
 This library enables the completion of C/C++ header file names using [[http://company-mode.github.io][Company mode]] for Emacs.
 
 #+CAPTION: Screenshot of company-c-headers in action
@@ -24,3 +27,4 @@ With the company-c-headers library added to the ~load-path~, all you need to do 
 Typically you would want to customize the search paths, which you can do using @<kbd>M-x customize-group@</kbd>, @<kbd>company-c-headers@</kbd>.
 
 Alternatively, you can bind the =company-c-headers-path-system= and =company-c-headers-path-user= variables to functions which return the corresponding paths. This allows integration with project-based libraries such as [[https://github.com/randomphrase/ede-compdb][EDE-compdb]].
+
