@@ -3,7 +3,7 @@
 #+EMAIL: alastair@girtby.net
 
 #+ATTR_HTML: :style float: right
-https://travis-ci.org/randomphrase/company-c-headers.svg?branch=master
+[[https://travis-ci.org/randomphrase/company-c-headers.svg?branch=master]]
 
 This library enables the completion of C/C++ header file names using [[http://company-mode.github.io][Company mode]] for Emacs.
 
