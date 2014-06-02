@@ -16,6 +16,10 @@ During completion, the path to the current candidate is made available as metada
 
 This library is inspired by [[https://github.com/mooz/auto-complete-c-headers][auto-complete-c-headers]].
 
+** Installation
+
+The best way to install this package is via [[http://melpa.milkbox.net/][MELPA]].
+
 ** Setup
 
 With the company-c-headers library added to the ~load-path~, all you need to do to initialize it is:
