@@ -165,21 +165,35 @@
              (company-c-headers 'location (car (company-c-headers 'candidates "<")))
              (cons (concat tmpdir "foo.h") 1)))
     )))
-    
+
 
 (ert-deftest post-completion-user-include ()
-  "After completion, add a terminating \" for user includes"
+  "After completion, add a terminating \" for user includes.
+If terminating \" already exist, don't add the \"."
   (with-test-c-buffer
    (insert "#include \"foo.h")
    (company-c-headers 'post-completion)
+   (should (looking-back "#include \"foo.h\"")))
+  ;; testcase if pre-existing terminating delimiter already exist
+  (with-test-c-buffer
+   (insert "#include \"foo.h\"") (backward-char 1)
+   (company-c-headers 'post-completion)
+   (end-of-line)
    (should (looking-back "#include \"foo.h\""))
    ))
 
 (ert-deftest post-completion-system-include ()
-  "After completion, add a terminating > for system includes"
+  "After completion, add a terminating > for system includes.
+If terminating > already exist, don't add the >."
   (with-test-c-buffer
    (insert "#include <foo.h")
    (company-c-headers 'post-completion)
+   (should (looking-back "#include <foo.h>")))
+  ;; testcase if pre-existing terminating delimiter already exist
+  (with-test-c-buffer
+   (insert "#include <foo.h>") (backward-char 1)
+   (company-c-headers 'post-completion)
+   (end-of-line)
    (should (looking-back "#include <foo.h>"))
    ))
 
