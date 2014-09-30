@@ -110,7 +110,7 @@ Filters on the appropriate regex for the current major mode."
       (setq fileprefix (file-name-nondirectory fileprefix))
       (setq delim (concat delim prefixdir))
       )
-      
+
     ;; Using a list of completions for this directory, remove those that a) don't match the
     ;; headers regexp, and b) are not directories (except for "." and ".." which ARE removed)
     (setq candidates (cl-remove-if
@@ -174,11 +174,12 @@ Filters on the appropriate regex for the current major mode."
      (when (looking-back company-c-headers-include-declaration (line-beginning-position))
        (let ((matched (match-string-no-properties 1)))
          ;; Add a terminating delimiter unless we've completed a directory name
-         ;; TODO: handle pre-existing terminating delimiter?
+         ;; If pre-existing terminating delimiter already exist, move cursor
+         ;; to end of line.
          (unless (equal matched (file-name-as-directory matched))
            (pcase (aref matched 0)
-             (?\" (insert "\""))
-             (?< (insert ">")))))))
+             (?\" (if (looking-at "\"") (end-of-line) (insert "\"")))
+             (?<  (if (looking-at ">") (end-of-line) (insert ">"))))))))
     ))
 
 (provide 'company-c-headers)
