@@ -12,7 +12,7 @@ This library enables the completion of C/C++ header file names using [[http://co
 
 When you type an ~#include~ declaration within a supported major mode (currently ~c-mode~, ~c++-mode~ and ~objc-mode~), company-c-headers will search for header files within predefined search paths. company-c-headers can search "system" and "user" paths, depending on the type of ~#include~ declaration you type.
 
-During completion, the path to the current candidate is made available as metadata, and can be seen in the minibuffer in the screenshot above. Also during completion, you can use @<kbd>C-w@</kbd> to temporarily display the currently-selected header file.
+During completion, the path to the current candidate is made available as metadata, and can be seen in the minibuffer in the screenshot above. Also during completion, you can use @@html:<kbd>@@C-w@@html:</kbd>@@ to temporarily display the currently-selected header file.
 
 This library is inspired by [[https://github.com/mooz/auto-complete-c-headers][auto-complete-c-headers]].
 
@@ -28,7 +28,7 @@ With the company-c-headers library added to the ~load-path~, all you need to do 
 (add-to-list 'company-backends 'company-c-headers)
 #+END_SRC
 
-Typically you would want to customize the search paths, which you can do using @<kbd>M-x customize-group@</kbd>, @<kbd>company-c-headers@</kbd>.
+Typically you would want to customize the search paths, which you can do using @@html:<kbd>@@M-x customize-group@@html:</kbd>@@, @@html:<kbd>@@company-c-headers@@html:</kbd>@@.
 
 Alternatively, you can bind the =company-c-headers-path-system= and =company-c-headers-path-user= variables to functions which return the corresponding paths. This allows integration with project-based libraries such as [[https://github.com/randomphrase/ede-compdb][EDE-compdb]].
 
