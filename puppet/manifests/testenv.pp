@@ -24,13 +24,13 @@ package { ['emacs24-common', 'emacs24-bin-common', 'emacs24-nox']:
   require => Apt::Ppa['ppa:cassou/emacs']
 }
 
-$cask_version = '0.6.0'
+$cask_version = '0.7.2'
 $cask_archive = "cask-${cask_version}"
 
 archive { $cask_archive:
   ensure        => present,
   digest_type   => 'sha1',
-  digest_string => '6f836bb41f034d6be9611ee09c78eb8cc52b53ca',
+  digest_string => '2c8012487f06c6b4f47ce56bd021bb71753f1bd0',
   url           => "https://github.com/cask/cask/archive/v${cask_version}.tar.gz",
   target        => '/opt/',
 }
