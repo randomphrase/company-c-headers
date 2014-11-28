@@ -9,4 +9,5 @@
  (depends-on "f")
  ;(depends-on "el-mock")
  (depends-on "ert-runner")
+ (depends-on "undercover")
  )

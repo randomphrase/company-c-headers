@@ -27,11 +27,14 @@
 ;;(require 'cl-lib)
 
 (require 'f)
+(require 'undercover)
 
-(defvar company-c-headers-test-path (f-dirname (f-this-file)))
-(defvar company-c-headers-path (f-parent company-c-headers-test-path))
+(defvar company-c-headers-test-dir (f-dirname (f-this-file)))
+(defvar company-c-headers-dir (f-parent company-c-headers-test-dir))
 
-(require 'company-c-headers (f-expand "company-c-headers.el" company-c-headers-path))
+(undercover "company-c-headers.el")
+
+(require 'company-c-headers (f-expand "company-c-headers.el" company-c-headers-dir))
 
 (defmacro with-test-c-buffer (&rest body)
   `(with-temp-buffer
