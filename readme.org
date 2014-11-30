@@ -10,9 +10,9 @@ This library enables the completion of C/C++ header file names using [[http://co
 #+CAPTION: Screenshot of company-c-headers in action
 [[screenshot.png]]
 
-When you type an ~#include~ declaration within a supported major mode (currently ~c-mode~, ~c++-mode~ and ~objc-mode~), company-c-headers will search for header files within predefined search paths. company-c-headers can search "system" and "user" paths, depending on the type of ~#include~ declaration you type.
+When you type an ~#include~ declaration within a supported major mode (currently ~c-mode~, ~c++-mode~ and ~objc-mode~), company-c-headers will search for completion candidates within the defined include paths. There are "system" and "user" include paths, for @@html:<code>@@#include <...>@@html:</code>@@ and @@html:<code>@@#include "..."@@html:</code>@@ declarations, respectively.
 
-During completion, the path to the current candidate is made available as metadata, and can be seen in the minibuffer in the screenshot above. Also during completion, you can use @@html:<kbd>@@C-w@@html:</kbd>@@ to temporarily display the currently-selected header file.
+During completion, the path to the current candidate can be seen in the minibuffer, such as in the screenshot above. Also during completion, you can use @@html:<kbd>@@C-w@@html:</kbd>@@ to temporarily display the currently-selected header file.
 
 This library is inspired by [[https://github.com/mooz/auto-complete-c-headers][auto-complete-c-headers]].
 
@@ -30,5 +30,14 @@ With the company-c-headers library added to the ~load-path~, all you need to do 
 
 Typically you would want to customize the search paths, which you can do using @@html:<kbd>@@M-x customize-group@@html:</kbd>@@, @@html:<kbd>@@company-c-headers@@html:</kbd>@@.
 
-Alternatively, you can bind the =company-c-headers-path-system= and =company-c-headers-path-user= variables to functions which return the corresponding paths. This allows integration with project-based libraries such as [[https://github.com/randomphrase/ede-compdb][EDE-compdb]].
+Alternatively, you can bind the =company-c-headers-path-system= and =company-c-headers-path-user= variables to functions which return the corresponding paths. For example, if you are using [[http://cedet.sourceforge.net/ede.shtml][EDE]], you can use the following:
+
+#+BEGIN_SRC emacs-lisp
+(defun ede-object-system-include-path ()
+  "Return the system include path for the current buffer."
+  (when ede-object
+    (ede-system-include-path ede-object)))
+
+(setq company-c-headers-path-system 'ede-object-system-include-path))
+#+END_SRC
 
