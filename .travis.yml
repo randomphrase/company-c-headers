@@ -2,17 +2,13 @@ language: emacs-lisp
 env:
   - EMACS=emacs24
   # - EMACS=emacs-snapshot
-
-# We pass --verbose to all our Puppet commands to prevent Travis CI from being
-# stuck because of lacking output.  We used to use --debug, but that is just too
-# much information
 before_install:
-  # Bootstrap Puppet, and install our Puppet modules.
-  - sudo apt-get update
-  - sudo apt-get install puppet
-  - sudo FACTER_travis=true puppet apply --verbose ./puppet/manifests/bootstrap.pp
-  # Bootstrap test environment
-  - sudo FACTER_travis=true puppet apply --verbose ./puppet/manifests/testenv.pp
+  # Bootstrap Ansible
+  - sudo apt-get install -y software-properties-common
+  - sudo apt-add-repository -y ppa:ansible/ansible
+  - sudo apt-get update -y -q
+  - sudo apt-get install -y ansible
+  - ansible-playbook -v playbook.yml
 install:
   # Install our packages
   - make EMACS=$EMACS deps
