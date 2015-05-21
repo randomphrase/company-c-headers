@@ -165,6 +165,9 @@ Filters on the appropriate regex for the current major mode."
     (`prefix
      (when (and (assoc major-mode company-c-headers-modes)
                 (looking-back company-c-headers-include-declaration (line-beginning-position)))
+       ;; yasnippet interfers with company-c-headers. let's exit all in-progress snippets to make it work.
+       (if (and (fboundp 'yas--snippets-at-point) (yas--snippets-at-point 'all-snippets))
+           (save-excursion (yas-exit-all-snippets)))
        (match-string-no-properties 1)))
     (`sorted t)
     (`candidates (company-c-headers--candidates arg))
