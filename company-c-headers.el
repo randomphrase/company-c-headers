@@ -81,7 +81,7 @@ returns the path list.  Note that paths in
   `(
     (c-mode     . ,(rx ".h" line-end))
     (c++-mode   . ,(rx (or (: line-start (one-or-more (in "A-Za-z0-9_")))
-                           (or ".h" ".hpp" ".hxx"))
+                           (or ".h" ".hpp" ".hxx" ".hh"))
                        line-end))
     (objc-mode  . ,(rx ".h" line-end))
     )
