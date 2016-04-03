@@ -1,17 +1,20 @@
 language: emacs-lisp
+dist: trusty
+sudo: false
 env:
-  - EMACS=emacs24
-  # - EMACS=emacs-snapshot
+  - EMACS_VERSION=24.5
+  # - EMACS_VERSION=snapshot
 before_install:
-  # Bootstrap Ansible
-  - sudo apt-get install -y software-properties-common
-  - sudo apt-add-repository -y ppa:ansible/ansible
-  - sudo apt-get update -y -q
-  - sudo apt-get install -y ansible
-  - ansible-playbook -v playbook.yml
+  # Use packaged emacs
+  - sudo apt-get -qq update
+  - sudo apt-get -qq install emacs24-nox
+  # Install cask
+  - export PATH="$HOME/bin:$PATH"
+  - wget 'https://raw.githubusercontent.com/flycheck/emacs-travis/master/emacs-travis.mk'
+  - make -f emacs-travis.mk install_cask
 install:
   # Install our packages
-  - make EMACS=$EMACS deps
+  - cask install
 script:
   # Run unit tests.
-  - make EMACS=$EMACS test
+  - cask exec ert-runner
