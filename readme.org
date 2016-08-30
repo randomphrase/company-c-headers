@@ -38,6 +38,6 @@ Alternatively, you can bind the =company-c-headers-path-system= and =company-c-h
   (when ede-object
     (ede-system-include-path ede-object)))
 
-(setq company-c-headers-path-system 'ede-object-system-include-path))
+(setq company-c-headers-path-system 'ede-object-system-include-path)
 #+END_SRC
 
