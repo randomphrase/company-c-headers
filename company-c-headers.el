@@ -173,10 +173,15 @@ Filters on the appropriate regex for the current major mode."
     (`post-completion
      (when (looking-back company-c-headers-include-declaration (line-beginning-position))
        (let ((matched (match-string-no-properties 1)))
-         ;; Add a terminating delimiter unless we've completed a directory name
-         ;; If pre-existing terminating delimiter already exist, move cursor
-         ;; to end of line.
-         (unless (equal matched (file-name-as-directory matched))
+         (if (string= matched (file-name-as-directory matched))
+             ;; This is a directory, setting `this-command' to a `self-insert-command'
+             ;; tricks company to automatically trigger completion again for the
+             ;; directory files.
+             ;; See https://github.com/company-mode/company-mode/issues/143
+             (setq this-command 'self-insert-command)
+           ;; It's not a directory, add a terminating delimiter.
+           ;; If pre-existing terminating delimiter already exists,
+           ;; move cursor to end of line.
            (pcase (aref matched 0)
              (?\" (if (looking-at "\"") (end-of-line) (insert "\"")))
              (?<  (if (looking-at ">") (end-of-line) (insert ">"))))))))
