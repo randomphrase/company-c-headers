@@ -30,7 +30,7 @@
 
 (ert-deftest parse-include-directives ()
   "Tests correct parsing of include directives"
-  
+
   (should (string-match-p company-c-headers-include-declaration "#include <"))
   (should (string-match-p company-c-headers-include-declaration "#include <sys/"))
   (should (string-match-p company-c-headers-include-declaration "#include <blah.h"))
@@ -47,7 +47,7 @@
 
   (let ((c-headers (cdr (assoc 'c-mode company-c-headers-modes)))
         (c++-headers (cdr (assoc 'c++-mode company-c-headers-modes))))
-    
+
     (should (string-match-p c-headers "foo.h"))
     (should-not (string-match-p c-headers "foo.hpp"))
     (should-not (string-match-p c-headers "vector"))
@@ -71,7 +71,7 @@
     (setq major-mode 'c-mode)
     (should (company-c-headers 'prefix))
    ))
-   
+
 (ert-deftest parse-prefix ()
   "Tests that we can parse the prefix for completion"
   (with-test-c-buffer
@@ -88,7 +88,7 @@
   "Tests that we can build a list of candidates from user include directories."
   (with-test-headers
    tmpdir '("a.h" "b.h")
-   
+
    (with-test-c-buffer
     (setq company-c-headers-path-system (list tmpdir))
     (should (equal (company-c-headers 'candidates "<") '("<a.h" "<b.h")))
@@ -105,6 +105,24 @@
     (setq company-c-headers-path-system (list (f-join tmpdir "sys")))
     (setq company-c-headers-path-user (list (f-join tmpdir "user")))
     (should (equal (company-c-headers 'candidates "\"") '("\"user.h" "\"sys.h")))
+    (should (equal (company-c-headers 'candidates "<") '("<sys.h")))
+    )))
+
+(ert-deftest system-include-subdir-candidates ()
+  "More complex example with subdirectories"
+
+  (with-test-headers
+   tmpdir '("sys/dir/sys1.h" "sys/dir/sys2.h" "user/dir/user1.h" "user/dir/user2.h")
+
+   (with-test-c-buffer
+    (setq company-c-headers-path-system (list (f-join tmpdir "sys")))
+    (setq company-c-headers-path-user (list (f-join tmpdir "user")))
+
+    (should (equal (company-c-headers 'candidates "\"") '("\"dir/" "\"dir/")))
+    (should (equal (company-c-headers 'candidates "\"dir/") '("\"dir/user1.h" "\"dir/user2.h"
+                                                              "\"dir/sys1.h" "\"dir/sys2.h")))
+    (should (equal (company-c-headers 'candidates "<") '("<dir/")))
+    (should (equal (company-c-headers 'candidates "<dir/") '("<dir/sys1.h" "<dir/sys2.h")))
     )))
 
 (ert-deftest ignore-nonexistent-paths ()
@@ -122,7 +140,7 @@
 
    (with-test-c-buffer
     (setq company-c-headers-path-system (list tmpdir))
-    
+
     (should (equal (company-c-headers 'candidates "<") '("<a.h" "<sub/")))
     (should (equal (company-c-headers 'candidates "<sub") '("<sub/")))
     (should (equal (company-c-headers 'candidates "<sub/") '("<sub/sub.h")))
@@ -136,7 +154,7 @@
 
    (with-test-c-buffer
     (setq company-c-headers-path-system (lambda () (list tmpdir)))
-     
+
     (should (equal (company-c-headers 'candidates "<") '("<foo.h")))
     )))
 
@@ -144,7 +162,7 @@
   "Metadata for each candidate should be the directory for the corresponding header."
   (with-test-headers
    tmpdir '("foo.h")
-  
+
    (with-test-c-buffer
     (setq company-c-headers-path-system (list tmpdir))
 

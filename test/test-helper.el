@@ -56,8 +56,9 @@
     ,dir
 
     (dolist (F ,files)
-      (f-mkdir (f-join ,dir (f-dirname F)))
-      (f-touch (f-join ,dir F)))
+      (let ((p (f-join ,dir F)))
+        (make-directory (f-dirname p) t)
+        (f-touch p)))
 
     ,@body
     ))
