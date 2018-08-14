@@ -128,6 +128,30 @@
     (should (equal (company-c-headers 'candidates "<sub/") '("<sub/sub.h")))
     )))
 
+(ert-deftest subdir-candidates-path-system-duplicates ()
+  "Test that duplicates proposal are removed system paths."
+
+  (with-test-headers
+   tmpdir '("first.h" "second.h")
+
+   (with-test-c-buffer
+    (setq company-c-headers-path-system (list tmpdir tmpdir))
+    (setq company-c-headers-path-user (list "foo" "bar"))
+    (should (equal (company-c-headers 'candidates "\"firs") '("\"first.h")))
+    )))
+
+(ert-deftest subdir-candidates-path-user-duplicates ()
+  "Test that duplicates proposal are removed when present user paths."
+  
+  (with-test-headers
+   tmpdir '("first.h" "second.h")
+
+   (with-test-c-buffer
+    (setq company-c-headers-path-system (list "foo" "bar"))
+    (setq company-c-headers-path-user (list tmpdir tmpdir))
+    (should (equal (company-c-headers 'candidates "\"firs") '("\"first.h")))
+    )))
+
 (ert-deftest path-bound-to-function ()
   "Tests that include paths can be provided by a function"
 
