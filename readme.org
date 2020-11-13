@@ -3,9 +3,9 @@
 #+EMAIL: alastair@girtby.net
 
 #+ATTR_HTML: :style float: right
-[[https://travis-ci.org/randomphrase/company-c-headers][https://travis-ci.org/randomphrase/company-c-headers.svg?branch=master]] [[https://coveralls.io/r/randomphrase/company-c-headers][https://img.shields.io/coveralls/randomphrase/company-c-headers.svg]] [[http://melpa.org/#/company-c-headers][http://melpa.org/packages/company-c-headers-badge.svg]]
+[[https://travis-ci.org/randomphrase/company-c-headers][https://travis-ci.org/randomphrase/company-c-headers.svg?branch=master]] [[https://coveralls.io/r/randomphrase/company-c-headers][https://img.shields.io/coveralls/randomphrase/company-c-headers.svg]] [[https://melpa.org/#/company-c-headers][https://melpa.org/packages/company-c-headers-badge.svg]]
 
-This library enables the completion of C/C++ header file names using [[http://company-mode.github.io][Company mode]] for Emacs.
+This library enables the completion of C/C++ header file names using [[https://company-mode.github.io][Company mode]] for Emacs.
 
 #+CAPTION: Screenshot of company-c-headers in action
 [[screenshot.png]]
@@ -18,7 +18,7 @@ This library is inspired by [[https://github.com/mooz/auto-complete-c-headers][a
 
 ** Installation
 
-The best way to install this package is via [[http://melpa.milkbox.net/][MELPA]].
+The best way to install this package is via [[https://melpa.org/#/][MELPA]].
 
 ** Setup
 
